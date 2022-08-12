@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"hash_map": "cpp",
+			"*.tcc": "cpp",
+			"deque": "cpp",
+			"list": "cpp",
+			"string": "cpp",
+			"vector": "cpp",
+			"cstring": "cpp",
+			"memory": "cpp",
+			"memory_resource": "cpp",
+			"fstream": "cpp",
+			"iosfwd": "cpp",
+			"new": "cpp",
+			"stop_token": "cpp",
+			"utility": "cpp"
+		},
+		"makefile.extensionOutputFolder": "./.vscode"
+	}
+}
