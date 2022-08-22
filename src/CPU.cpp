@@ -15,22 +15,22 @@ void CPU::fetch() {
 }
 
 void CPU::decode() {
-    if (instruction.register1 == memory) {
+    if (instruction.operand1 == memory) {
         PC++;
         memory1 = read(PC);
     }
-    if (instruction.register2 == memory) {
+    if (instruction.operand2 == memory) {
         PC++;
         memory2 = read(PC);
     }
-    if (instruction.register3 == memory) {
+    if (instruction.operand3 == memory) {
         PC++;
         memory3 = read(PC);
     }
 }
 
 void CPU::execute() {
-    switch (instruction.instruction) {
+    switch (instruction.opcode) {
         case ADD:
             AD();
             break;
@@ -58,6 +58,10 @@ void CPU::execute() {
         case JPZ:
             JZ();
             break;
+        default:
+            ST.error = true;
+            cout << "Invalid instruction" << endl;
+            exit(EXIT_FAILURE);
     }
 }
 
@@ -69,560 +73,560 @@ void CPU::write(uint32_t address, uint32_t data) {
 }
 
 void CPU::AD() {
-    uint32_t register1, register2, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand2, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
-    switch (instruction.register2) {
+    switch (instruction.operand2) {
         case GPR0:
-            register2 = GP0;
+            operand2 = GP0;
             break;
         case GPR1:
-            register2 = GP1;
+            operand2 = GP1;
             break;
         case GPR2:
-            register2 = GP2;
+            operand2 = GP2;
             break;
         case GPR3:
-            register2 = GP3;
+            operand2 = GP3;
             break;
         case PCR:
-            register2 = PC;
+            operand2 = PC;
             break;
         case SPR:
-            register2 = SP;
+            operand2 = SP;
             break;
         case STR:
-            register2 = ST.data;
+            operand2 = ST.data;
             break;
         case memory:
-            register2 = memory2;
+            operand2 = memory2;
             break;
     }
     
-    register3 = register1 + register2;
+    operand3 = operand1 + operand2;
 
-    switch (instruction.register3) {
+    switch (instruction.operand3) {
         case GPR0:
-            GP0 = register3;
+            GP0 = operand3;
             break;
         case GPR1:
-            GP1 = register3;
+            GP1 = operand3;
             break;
         case GPR2:
-            GP2 = register3;
+            GP2 = operand3;
             break;
         case GPR3:
-            GP3 = register3;
+            GP3 = operand3;
             break;
         case PCR:
-            PC = register3;
+            PC = operand3;
             break;
         case SPR:
-            SP = register3;
+            SP = operand3;
             break;
         case STR:
-            ST.data = register3;
+            ST.data = operand3;
             break;
         case memory:
-            write(memory3, register3);
+            write(memory3, operand3);
             break;
     }
 
 }
 
 void CPU::SB() {
-    uint32_t register1, register2, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand2, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
-    switch (instruction.register2) {
+    switch (instruction.operand2) {
         case GPR0:
-            register2 = GP0;
+            operand2 = GP0;
             break;
         case GPR1:
-            register2 = GP1;
+            operand2 = GP1;
             break;
         case GPR2:
-            register2 = GP2;
+            operand2 = GP2;
             break;
         case GPR3:
-            register2 = GP3;
+            operand2 = GP3;
             break;
         case PCR:
-            register2 = PC;
+            operand2 = PC;
             break;
         case SPR:
-            register2 = SP;
+            operand2 = SP;
             break;
         case STR:
-            register2 = ST.data;
+            operand2 = ST.data;
             break;
         case memory:
-            register2 = memory2;
+            operand2 = memory2;
             break;
     }
     
-    register3 = register1 - register2;
+    operand3 = operand1 - operand2;
 
-    switch (instruction.register3) {
+    switch (instruction.operand3) {
         case GPR0:
-            GP0 = register3;
+            GP0 = operand3;
             break;
         case GPR1:
-            GP1 = register3;
+            GP1 = operand3;
             break;
         case GPR2:
-            GP2 = register3;
+            GP2 = operand3;
             break;
         case GPR3:
-            GP3 = register3;
+            GP3 = operand3;
             break;
         case PCR:
-            PC = register3;
+            PC = operand3;
             break;
         case SPR:
-            SP = register3;
+            SP = operand3;
             break;
         case STR:
-            ST.data = register3;
+            ST.data = operand3;
             break;
         case memory:
-            write(memory3, register3);
+            write(memory3, operand3);
             break;
     }
     
 }
 
 void CPU::ML() {
-    uint32_t register1, register2, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand2, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
-    switch (instruction.register2) {
+    switch (instruction.operand2) {
         case GPR0:
-            register2 = GP0;
+            operand2 = GP0;
             break;
         case GPR1:
-            register2 = GP1;
+            operand2 = GP1;
             break;
         case GPR2:
-            register2 = GP2;
+            operand2 = GP2;
             break;
         case GPR3:
-            register2 = GP3;
+            operand2 = GP3;
             break;
         case PCR:
-            register2 = PC;
+            operand2 = PC;
             break;
         case SPR:
-            register2 = SP;
+            operand2 = SP;
             break;
         case STR:
-            register2 = ST.data;
+            operand2 = ST.data;
             break;
         case memory:
-            register2 = memory2;
+            operand2 = memory2;
             break;
     }
     
-    register3 = register1 * register2;
+    operand3 = operand1 * operand2;
 
-    switch (instruction.register3) {
+    switch (instruction.operand3) {
         case GPR0:
-            GP0 = register3;
+            GP0 = operand3;
             break;
         case GPR1:
-            GP1 = register3;
+            GP1 = operand3;
             break;
         case GPR2:
-            GP2 = register3;
+            GP2 = operand3;
             break;
         case GPR3:
-            GP3 = register3;
+            GP3 = operand3;
             break;
         case PCR:
-            PC = register3;
+            PC = operand3;
             break;
         case SPR:
-            SP = register3;
+            SP = operand3;
             break;
         case STR:
-            ST.data = register3;
+            ST.data = operand3;
             break;
         case memory:
-            write(memory3, register3);
+            write(memory3, operand3);
             break;
     }
     
 }
 
 void CPU::DV() {
-    uint32_t register1, register2, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand2, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
-    switch (instruction.register2) {
+    switch (instruction.operand2) {
         case GPR0:
-            register2 = GP0;
+            operand2 = GP0;
             break;
         case GPR1:
-            register2 = GP1;
+            operand2 = GP1;
             break;
         case GPR2:
-            register2 = GP2;
+            operand2 = GP2;
             break;
         case GPR3:
-            register2 = GP3;
+            operand2 = GP3;
             break;
         case PCR:
-            register2 = PC;
+            operand2 = PC;
             break;
         case SPR:
-            register2 = SP;
+            operand2 = SP;
             break;
         case STR:
-            register2 = ST.data;
+            operand2 = ST.data;
             break;
         case memory:
-            register2 = memory2;
+            operand2 = memory2;
             break;
     }
     
-    register3 = register1 / register2;
+    operand3 = operand1 / operand2;
 
-    switch (instruction.register3) {
+    switch (instruction.operand3) {
         case GPR0:
-            GP0 = register3;
+            GP0 = operand3;
             break;
         case GPR1:
-            GP1 = register3;
+            GP1 = operand3;
             break;
         case GPR2:
-            GP2 = register3;
+            GP2 = operand3;
             break;
         case GPR3:
-            GP3 = register3;
+            GP3 = operand3;
             break;
         case PCR:
-            PC = register3;
+            PC = operand3;
             break;
         case SPR:
-            SP = register3;
+            SP = operand3;
             break;
         case STR:
-            ST.data = register3;
+            ST.data = operand3;
             break;
         case memory:
-            write(memory3, register3);
+            write(memory3, operand3);
             break;
     }
     
 }
 
 void CPU::MV() {
-    uint32_t register1, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
     
-    register3 = register1;
+    operand3 = operand1;
 
-    switch (instruction.register3) {
+    switch (instruction.operand3) {
         case GPR0:
-            GP0 = register3;
+            GP0 = operand3;
             break;
         case GPR1:
-            GP1 = register3;
+            GP1 = operand3;
             break;
         case GPR2:
-            GP2 = register3;
+            GP2 = operand3;
             break;
         case GPR3:
-            GP3 = register3;
+            GP3 = operand3;
             break;
         case PCR:
-            PC = register3;
+            PC = operand3;
             break;
         case SPR:
-            SP = register3;
+            SP = operand3;
             break;
         case STR:
-            ST.data = register3;
+            ST.data = operand3;
             break;
         case memory:
-            write(memory3, register3);
+            write(memory3, operand3);
             break;
     }
     
 }
 
 void CPU::CP() {
-    uint32_t register1, register2, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand2, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
-    switch (instruction.register2) {
+    switch (instruction.operand2) {
         case GPR0:
-            register2 = GP0;
+            operand2 = GP0;
             break;
         case GPR1:
-            register2 = GP1;
+            operand2 = GP1;
             break;
         case GPR2:
-            register2 = GP2;
+            operand2 = GP2;
             break;
         case GPR3:
-            register2 = GP3;
+            operand2 = GP3;
             break;
         case PCR:
-            register2 = PC;
+            operand2 = PC;
             break;
         case SPR:
-            register2 = SP;
+            operand2 = SP;
             break;
         case STR:
-            register2 = ST.data;
+            operand2 = ST.data;
             break;
         case memory:
-            register2 = memory2;
+            operand2 = memory2;
             break;
     }
 
-    ST.negative = register1 < register2;
-    ST.zero = register1 == register2;
+    ST.negative = operand1 < operand2;
+    ST.zero = operand1 == operand2;
 }
 
 void CPU::JP() {
-    uint32_t register1, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
 
-    PC = register1;
+    PC = operand1;
 }
 
 void CPU::JN() {
-    uint32_t register1, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
 
-    if (ST.negative) PC = register1;
+    if (ST.negative) PC = operand1;
 }
 
 void CPU::JZ() {
-    uint32_t register1, register3;
-    switch (instruction.register1) {
+    uint32_t operand1, operand3;
+    switch (instruction.operand1) {
         case GPR0:
-            register1 = GP0;
+            operand1 = GP0;
             break;
         case GPR1:
-            register1 = GP1;
+            operand1 = GP1;
             break;
         case GPR2:
-            register1 = GP2;
+            operand1 = GP2;
             break;
         case GPR3:
-            register1 = GP3;
+            operand1 = GP3;
             break;
         case PCR:
-            register1 = PC;
+            operand1 = PC;
             break;
         case SPR:
-            register1 = SP;
+            operand1 = SP;
             break;
         case STR:
-            register1 = ST.data;
+            operand1 = ST.data;
             break;
         case memory:
-            register1 = memory1;
+            operand1 = memory1;
             break;
     }
 
-    if (ST.zero) PC = register1;
+    if (ST.zero) PC = operand1;
 }

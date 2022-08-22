@@ -1,17 +1,20 @@
 #pragma once
 
+#include <stdlib.h>
+#include <iostream>
+
 #include "BUS.h"
 
 using namespace std;
 
 class BUS;
 
-enum registerMode_t : uint8_t {
+enum operand_t : uint8_t {
     GPR0 = 0, GPR1 = 1, GPR2 = 2, GPR3 = 3,
     PCR = 4, SPR = 5, STR = 6, memory = 7, nothing = 8
 };
 
-enum instructionRaw_t : uint8_t {
+enum opcode_t : uint8_t {
     ADD = 0, SUB = 1, MUL = 2, DIV = 3,
     MOV = 4, CMP = 5, JMP = 6, JPN = 7, JPZ = 8
 };
@@ -19,10 +22,10 @@ enum instructionRaw_t : uint8_t {
 typedef struct instruction_t {
     union {
         struct {
-            instructionRaw_t instruction:8;
-            registerMode_t register1:8;
-            registerMode_t register2:8;
-            registerMode_t register3:8;
+            opcode_t opcode:8;
+            operand_t operand1:8;
+            operand_t operand2:8;
+            operand_t operand3:8;
         };
         uint32_t data;
     };
