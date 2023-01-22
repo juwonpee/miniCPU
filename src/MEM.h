@@ -18,7 +18,7 @@ class MEM {
 
 
     private:
-        vector<uint32_t> RAM;
+        vector<uint8_t> RAM;
 
         // Special memory mapped registers
         uint32_t memorySize;

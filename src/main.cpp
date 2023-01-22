@@ -14,27 +14,12 @@ void cmdHelp() {
     cout << "-r ROM. Must be compiled with miniGCC" << endl;
     cout << "-m Memory Size, If not specified, defaults to 128MB. Input in multiple of K, M, G (ex. 128M)" << endl;
 }
-class A {
-public:
-	A() {
-		example1 = "This is class A";
-	};
-	string example1;
-};
 
-class B : public A {
-public:
-	B() {
-		example1 = "This is class B";
-	};
-	string example2;
-};
 
 int main(int argc, char* argv[]) {
     int opt;
-    int memorySize;
+    uint32_t memorySize;
     string romDirectory;
-    string temp;
     while ((opt = getopt(argc, argv, "hr:m:")) != -1) {
         switch (opt) {
             case 'h':
@@ -45,7 +30,7 @@ int main(int argc, char* argv[]) {
                 romDirectory = optarg;
                 continue;
             case 'm':
-                temp = optarg;
+                memorySize = atoi(optarg);
                 continue;
                 //char multiplier = temp[temp.size()-1];
                 // TODO: Complete memory size argument parser
@@ -57,5 +42,5 @@ int main(int argc, char* argv[]) {
     }
 
     // Start emulation
-    BUS emulator(0x100000, romDirectory); 
+    BUS emulator(memorySize, romDirectory); 
 }

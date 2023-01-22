@@ -21,9 +21,16 @@ MEM::MEM(uint32_t memSize, string romDirectory) {
 }
 
 uint32_t MEM::read(uint32_t address) {
-    return RAM[address];
+    uint32_t temp = RAM[address];
+    temp += RAM[address + 1] << 8;
+    temp += RAM[address + 2] << 16;
+    temp += RAM[address + 3] << 24;
+    return temp;
 }
 
 void MEM::write(uint32_t address, uint32_t data) {
-    RAM[address] = data;
+    RAM[address] = data & 0x000000FF;
+    RAM[address + 1] = (data & 0x0000FF00) >> 8;
+    RAM[address + 2] = (data & 0x00FF0000) >> 16;
+    RAM[address + 3] = (data & 0xFF000000) >> 24;
 }

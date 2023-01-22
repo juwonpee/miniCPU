@@ -19,7 +19,13 @@
 			"iosfwd": "cpp",
 			"new": "cpp",
 			"stop_token": "cpp",
-			"utility": "cpp"
+			"utility": "cpp",
+			"bit": "cpp",
+			"compare": "cpp",
+			"cstddef": "cpp",
+			"limits": "cpp",
+			"functional": "cpp",
+			"ostream": "cpp"
 		},
 		"makefile.extensionOutputFolder": "./.vscode"
 	}

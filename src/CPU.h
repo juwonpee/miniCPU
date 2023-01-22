@@ -9,40 +9,40 @@ using namespace std;
 
 class BUS;
 
-enum operand_t : uint8_t {
-    GPR0 = 0, GPR1 = 1, GPR2 = 2, GPR3 = 3,
-    PCR = 4, SPR = 5, STR = 6, memory = 7, nothing = 8
-};
-
 enum opcode_t : uint8_t {
-    ADD = 0, SUB = 1, MUL = 2, DIV = 3,
-    MOV = 4, CMP = 5, JMP = 6, JPN = 7, JPZ = 8
+    ADD, SUB, MUL, DIV,
+    MOV, CMP, JMP, JPZ
 };
 
-typedef struct instruction_t {
-    union {
-        struct {
-            opcode_t opcode:8;
-            operand_t operand1:8;
-            operand_t operand2:8;
-            operand_t operand3:8;
-        };
-        uint32_t data;
+enum operand_t : uint8_t {
+    GPR0, GPR1, GPR2, GPR3,
+    PCR, SPR, SBP, STR, memory, nothing
+};
+
+typedef union instruction_t {
+    struct {
+        opcode_t opcode:8;
+        operand_t operand1:8;
+        operand_t operand2:8;
+        operand_t operand3:8;
     };
+    uint32_t data;
 }instruction_t;
 
 
+#define EXCEPTION_INVALID_OPCODE        0b00000001
+#define EXCEPTION_INVALID_OPERAND       0x02
+#define EXCEPTION_DIVISION_BY_ZERO      0x04
+#define EXCEPTION_ALIGNMENT             0x08    // Memory address not aligned to 4
+#define EXCEPTION_STACK_ALIGNMENT       0x10    // Stack pointer out of bounds
 
-typedef struct status_t {
-    union {
-        struct {
-            uint32_t negative:1;
-            uint32_t zero:1;
-            uint32_t error:1;
-            uint32_t ignore:29;   
-        };
-        uint32_t data;
+typedef union status_t {
+    struct {
+        uint32_t zero:1;
+        uint32_t exception:8;
+        uint32_t reserved:23;   
     };
+    uint32_t data;
 }status_t;
 
 
@@ -52,23 +52,37 @@ class CPU {
 
         void clock();
 
+        // DEBUG: dump contents of CPU during execution
+        void dump();
+
     private:
 
         BUS* bus;
 
         // Registers
         uint32_t GP0, GP1, GP2, GP3;    // General purpose registers
-        uint32_t PC;       // Program counter
-        uint32_t SP;       // Stack pointer
-        status_t ST;       // Status register
+        uint32_t PC;                    // Program counter
+        uint32_t SP;                    // Stack pointer
+        uint32_t BP;                    // Stack base pointer
+        status_t ST;                    // Status register
 
         instruction_t instruction;
 
-        uint32_t memory1;
-        uint32_t memory2;
-        uint32_t memory3;
+        // DEBUG: Save registers before exection
+        struct {
+            uint32_t GP0, GP1, GP2, GP3;    // General purpose registers
+            uint32_t PC;                    // Program counter
+            uint32_t SP;                    // Stack pointer
+            uint32_t BP;                    // Stack base pointer
+            status_t ST;                    // Status register
+        } save;
 
+        // operand registers
+        uint32_t opReg1;
+        uint32_t opReg2;
+        uint32_t opReg3;
 
+        void exception();
         
         void fetch();
         void decode();
