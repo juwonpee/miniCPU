@@ -1,28 +1,27 @@
 #pragma once
 
-#include <stdint.h>
 #include <vector>
 #include <iostream>
-#include <cstring>
 #include <fstream>
 #include <iterator>
+
 
 using namespace std;
 
 class MEM {
     public:
-        MEM(uint32_t memSize, string romDirectory);
-        uint32_t read(uint32_t address);
+        MEM(uint64_t memSize, string romDirectory);
+        uint64_t read(uint64_t address);
         
-        void write(uint32_t address, uint32_t data);
+        void write(uint64_t address, uint64_t data);
 
 
     private:
-        vector<uint8_t> RAM;
+        vector<uint8_t> RAM; 
 
         // Special memory mapped registers
-        uint32_t memorySize;
-        uint32_t videoStart;
+        uint64_t memorySize;
+        uint64_t videoStart;
 
 
 };

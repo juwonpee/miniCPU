@@ -13,13 +13,13 @@ using namespace sf;
 #define GPU_RESULUTION_HEIGHT       480
 
 // Text Mode video 80x60
-#define GPU_MODE 		            0xFFFFFFF0
-#define GPU_FONT                    0xFE000000
+#define GPU_MODE 		            0xFFFFFFFFFFFFFFF0
+#define GPU_FONT                    0xFFFFFFFFFE000000
 // Graphics Mode video 640*480 (RGB)
-#define GPU_GRAPHICS_START 	        0xFD000000
+#define GPU_GRAPHICS_START 	        0xFFFFFFFFFD000000
 
-#define GPU_START                   0xFD000000
-#define GPU_END                     0xFFFFFFFF
+#define MEMORY_GPU_START                   0xFFFFFFFFFD000000
+#define MEMORY_GPU_END                     0xFFFFFFFFFFFFFFFF
 
 // Video Memory always starts at 0x0
 // Resolution os 800 * 600 with one word to each pixel
@@ -41,8 +41,8 @@ class GPU {
         GPU(BUS* _bus);
         ~GPU();
 
-        uint32_t read(uint32_t address);
-        void write(uint32_t address, uint32_t data);
+        uint64_t read(uint64_t address);
+        void write(uint64_t address, uint64_t data);
 
 
     private:

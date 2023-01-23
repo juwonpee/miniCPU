@@ -18,7 +18,7 @@ void cmdHelp() {
 
 int main(int argc, char* argv[]) {
     int opt;
-    uint32_t memorySize;
+    uint64_t memorySize;
     string romDirectory;
     while ((opt = getopt(argc, argv, "hr:m:")) != -1) {
         switch (opt) {

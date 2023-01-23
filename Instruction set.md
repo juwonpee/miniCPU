@@ -1,6 +1,6 @@
 ## Instruction set documentation
 
-#### 32bit RISC instruction set inspired by ARM
+#### 64bit RISC instruction set inspired by ARM
 ##### Memory
 All memory accesses must be aligned by 4 for simplicity and code saftey
 ##### Registers
@@ -16,8 +16,8 @@ All memory accesses must be aligned by 4 for simplicity and code saftey
 | Zero flag     | 0             |               | Not zero      | Zero       |
 | Negative flag | 1             |               | Not negative  | Negative      |
 | Reserved      | 2~7           | 
-| Exceptions    |  8~15         | Bitmask for exceptions|
-| Reserved      | 16~31         | 
+| Exceptions    | 8~23          | Bitmask for exceptions|
+| Reserved      | 24~63         | 
 
 ##### Exceptions
 | Function                      |Bit field      | Description   |
@@ -25,8 +25,8 @@ All memory accesses must be aligned by 4 for simplicity and code saftey
 | EXCEPTION_INVALID_OPCODE      | 0             |
 | EXCEPTION_INVALID_OPERAND     | 1             |
 | EXCEPTION_DIVISION_BY_ZERO    | 2             |
-| EXCEPTION_ALIGNMENT           | 3             | Memory address not aligned by 4
-|EXCEPTION_STACK_ALIGNMENT      | 4             | Stack pointer out of bounds / higher than base pointer
+| EXCEPTION_ALIGNMENT           | 3             | Memory address not aligned by 4|
+|EXCEPTION_STACK_ALIGNMENT      | 4             | Stack pointer out of bounds / higher than base pointer|
 
 
 Instruction split into 3 sections

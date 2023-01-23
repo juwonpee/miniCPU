@@ -14,12 +14,12 @@ serial::~serial() {
 
 }
 
-uint32_t serial::read(uint32_t address) {
+uint64_t serial::read(uint64_t address) {
     if (address == MEMORY_SERIAL_START) return serialRead();
     return 0;
 }
 
-void serial::write(uint32_t address, uint32_t data) {
+void serial::write(uint64_t address, uint64_t data) {
     if (address == MEMORY_SERIAL_START) serialWrite((uint8_t)data);
 }
 

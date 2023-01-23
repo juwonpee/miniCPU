@@ -28,7 +28,7 @@ void CPU::fetch() {
     save.BP = BP;
     save.CR = CR;
 
-    PC+=4
+    PC+=4;
 }
 
 void CPU::decode() {
@@ -58,13 +58,13 @@ void CPU::decode() {
             opReg1 = &CR.data;
             break;
         case memory:
-            if (!(PC % 4)) {
+            if (!(PC % 8)) {
                 CR.exception &= EXCEPTION_ALIGNMENT;
                 exc();
             }
             else {
-                opReg1 = (uint32_t*)PC;
-                PC+=4;
+                opReg1 = (uint64_t*)PC;
+                PC+=8;
             }
             break;
         default:
@@ -98,13 +98,13 @@ void CPU::decode() {
             opReg2 = &CR.data;
             break;
         case memory:
-            if (!(PC % 4)) {
+            if (!(PC % 8)) {
                 CR.exception &= EXCEPTION_ALIGNMENT;
                 exc();
             }
             else {
-                opReg2 = (uint32_t*)PC;
-                PC+=4;
+                opReg2 = (uint64_t*)PC;
+                PC+=8;
             }
             break;
         case nothing:
@@ -141,13 +141,13 @@ void CPU::decode() {
             opReg3 = &CR.data;
             break;
         case memory:
-            if (!(PC % 4)) {
+            if (!(PC % 8)) {
                 CR.exception &= EXCEPTION_ALIGNMENT;
                 exception();
             }
             else {
-                opReg3 = (uint32_t*)PC;
-                PC+=4;
+                opReg3 = (uint64_t*)PC;
+                PC+=8;
             }
             break;
         case nothing:
@@ -171,10 +171,10 @@ void CPU::execute() {
     
 }
 
-uint32_t CPU::read(uint32_t address) {
+uint64_t CPU::read(uint64_t address) {
     return bus->read(address);
 }
-void CPU::write(uint32_t address, uint32_t data) {
+void CPU::write(uint64_t address, uint64_t data) {
     bus->write(address, data);
 }
 
@@ -197,134 +197,79 @@ void CPU::exc() {
     }
 
     cout << "CPU dump" << endl;
-    printf("GP0: %x GP1: %x GP2: %x GP3 %x\n", GP0, GP1, GP2, GP3);
-    printf("PC: %x\n", PC);
-    printf("SP: %x BP: %x\n", SP, BP);
-    printf("ST: %x\n", CR.data);
+    printf("GP0: %lx GP1: %lx GP2: %lx GP3 %lx\n", GP0, GP1, GP2, GP3);
+    printf("PC: %lx\n", PC);
+    printf("SP: %lx BP: %lx\n", SP, BP);
+    printf("ST: %lx\n", CR.data);
 
     hlt();
 }
 
 void CPU::add() {
-    uint32_t temp = *opReg1 + *opReg2;
+    uint64_t temp = *opReg1 + *opReg2;
     if (instruction.operand3 == memory) {
-        write((uint32_t)opReg3, temp);
+        write((uint64_t)opReg3, temp);
     }
     else *opReg3 = temp;
 
 }
 
 void CPU::sub() {
-    uint32_t temp = *opReg1 - *opReg2;
+    uint64_t temp = *opReg1 - *opReg2;
     if (instruction.operand3 == memory) {
-        write((uint32_t)opReg3, temp);
+        write((uint64_t)opReg3, temp);
     }
     else *opReg3 = temp;
 }
 
 void CPU::mul() {
-    uint32_t temp = *opReg1 * *opReg2;
+    uint64_t temp = *opReg1 * *opReg2;
     if (instruction.operand3 == memory) {
-        write((uint32_t)opReg3, temp);
+        write((uint64_t)opReg3, temp);
     }
     else *opReg3 = temp;
     
 }
 
 void CPU::div() {
-    if (*opReg2 =< 0) {
+    if (*opReg2 <= 0) {
         CR.exception &= EXCEPTION_DIVISION_BY_ZERO;
         exc();
     }
 
-    uint32_t temp = *opReg1 / *opReg2;
+    uint64_t temp = *opReg1 / *opReg2;
     if (instruction.operand3 == memory) {
-        write((uint32_t)opReg3, temp);
+        write((uint64_t)opReg3, temp);
     }
     else *opReg3 = temp;
 }
 
 void CPU::mov() {
     if (instruction.operand3 == memory) {
-        write((uint32_t)opReg3, *opReg1);
+        write((uint64_t)opReg3, *opReg1);
     }
     else *opReg3 = *opReg1;
-    }
-    
 }
 
 void CPU::cmp() {
-    uint32_t operand1, operand2, operand3;
-    
-    CR.zero = operand1 == operand2;
+    if (*opReg1 == *opReg2) CR.zero = 1;
+    else CR.zero = 0;
 }
 
 void CPU::jmp() {
-    uint32_t operand1, operand3;
-    switch (instruction.operand1) {
-        case GPR0:
-            opReg1 = GP0;
-            break;
-        case GPR1:
-            opReg1 = GP1;
-            break;
-        case GPR2:
-            opReg1 = GP2;
-            break;
-        case GPR3:
-            opReg1 = GP3;
-            break;
-        case PCR:
-            opReg1 = PC;
-            break;
-        case SPR:
-            opReg1 = SP;
-            break;
-        case STR:
-            opReg1 = CR.data;
-            break;
-        case memory:
-            opReg1 = opReg1;
-            break;
-    }
+    PC = (uint64_t)opReg1;
+}
 
-    PC = operand1;
+void CPU::jpn() {
+    if (CR.negative) PC = (uint64_t)opReg1;
 }
 
 void CPU::jpz() {
-    uint32_t operand1, operand3;
-    switch (instruction.operand1) {
-        case GPR0:
-            opReg1 = GP0;
-            break;
-        case GPR1:
-            opReg1 = GP1;
-            break;
-        case GPR2:
-            opReg1 = GP2;
-            break;
-        case GPR3:
-            opReg1 = GP3;
-            break;
-        case PCR:
-            opReg1 = PC;
-            break;
-        case SPR:
-            opReg1 = SP;
-            break;
-        case STR:
-            opReg1 = CR.data;
-            break;
-        case memory:
-            opReg1 = opReg1;
-            break;
-    }
-
-    if (CR.zero) PC = operand1;
+    if (CR.zero) PC = (uint64_t)opReg1;
 }
 
 void CPU::push() {
-
+    write(SP, *opReg1);
 }
 
 void CPU::hlt() {

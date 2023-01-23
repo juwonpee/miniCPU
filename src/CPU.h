@@ -12,43 +12,44 @@ class BUS;
 enum opcode_t {
     EXC = 0, ADD = 1, SUB = 2, MUL = 3, 
     DIV = 4, MOV = 5, CMP = 6, JMP = 7, 
-    JPZ = 8, PUSH = 9, HLT = 10
+    JPN = 8, JPZ = 9, PUSH = 10, 
+    HLT = 255
 };
 
 enum operand_t {
     GPR0 = 0, GPR1 = 1, GPR2 = 2, GPR3 = 3,
     PCR = 4, SPR = 5, SBP = 6, STR = 7, 
     memory = 8,
-    nothing = 15
+    nothing = 255
 };
 
 typedef union instruction_t {
     struct {
-        opcode_t opcode:4;
-        operand_t operand1:4;
-        operand_t operand2:4;
-        operand_t operand3:4;
-        uint16_t reserved:16;
+        opcode_t opcode:8;
+        operand_t operand1:8;
+        operand_t operand2:8;
+        operand_t operand3:8;
+        uint64_t reserved:32;
     };
-    uint32_t data;
+    uint64_t data;
 }instruction_t;
 
 
-#define EXCEPTION_INVALID_OPCODE        0b00000001
-#define EXCEPTION_INVALID_OPERAND       0b00000010
-#define EXCEPTION_DIVISION_BY_ZERO      0b00000100
-#define EXCEPTION_ALIGNMENT             0b00001000    // Memory address not aligned to 4
-#define EXCEPTION_STACK_ALIGNMENT       0b00010000    // Stack pointer out of bounds
+#define EXCEPTION_INVALID_OPCODE        0x0001
+#define EXCEPTION_INVALID_OPERAND       0x0002
+#define EXCEPTION_DIVISION_BY_ZERO      0x0004
+#define EXCEPTION_ALIGNMENT             0x0008    // Memory address not aligned to 4
+#define EXCEPTION_STACK_ALIGNMENT       0x0010    // Stack pointer out of bounds
 
 typedef union control_t {
     struct {
-        uint32_t zero:1;
-        uint32_t negative:1
-        uint32_t reserved1:6;
-        uint32_t exception:8;
-        uint32_t reserved2:16;   
+        uint64_t zero:1;
+        uint64_t negative:1;
+        uint64_t reserved1:6;
+        uint64_t exception:16;
+        uint64_t reserved2:40;   
     };
-    uint32_t data;
+    uint64_t data;
 }control_t;
 
 
@@ -63,36 +64,36 @@ class CPU {
         BUS* bus;
 
         // Registers
-        uint32_t GP0, GP1, GP2, GP3;    // General purpose registers
-        uint32_t PC;                    // Program counter
-        uint32_t SP;                    // Stack pointer
-        uint32_t BP;                    // Stack base pointer
+        uint64_t GP0, GP1, GP2, GP3;    // General purpose registers
+        uint64_t PC;                    // Program counter
+        uint64_t SP;                    // Stack pointer
+        uint64_t BP;                    // Stack base pointer
         control_t CR;                   // Control register
 
         instruction_t instruction;
 
         // DEBUG: Save registers before exection
         struct {
-            uint32_t GP0, GP1, GP2, GP3;    // General purpose registers
-            uint32_t PC;                    // Program counter
-            uint32_t SP;                    // Stack pointer
-            uint32_t BP;                    // Stack base pointer
+            uint64_t GP0, GP1, GP2, GP3;    // General purpose registers
+            uint64_t PC;                    // Program counter
+            uint64_t SP;                    // Stack pointer
+            uint64_t BP;                    // Stack base pointer
             control_t CR;                    // Control register
         } save;
 
         // operand registers
-        uint32_t* opReg1;
-        uint32_t* opReg2;
-        uint32_t* opReg3;
+        uint64_t* opReg1;
+        uint64_t* opReg2;
+        uint64_t* opReg3;
 
         void fetch();
         void decode();
-        void (CPU::*lookup[256])() = {&CPU::exc, &CPU::add, &CPU::sub, &CPU::mul, &CPU::div, &CPU::mov, &CPU::cmp, &CPU::jmp, &CPU::jpz, &CPU::push, &CPU::hlt};
+        void (CPU::*lookup[256])() = {&CPU::exc, &CPU::add, &CPU::sub, &CPU::mul, &CPU::div, &CPU::mov, &CPU::cmp, &CPU::jmp, &CPU::jpn, &CPU::jpz, &CPU::push, &CPU::hlt};
         void execute();
         void call(void (CPU::*func)());
 
-        uint32_t read(uint32_t address);
-        void write(uint32_t address, uint32_t data);
+        uint64_t read(uint64_t address);
+        void write(uint64_t address, uint64_t data);
 
         // Exception
         // Print out registers to serial
@@ -125,6 +126,10 @@ class CPU {
         // Unconditional jump
         // OP1 -> PC
         void jmp();
+
+        // Negative jump
+        // OP1 -> PC
+        void jpn();
 
         // Jump if zero
         // OP1 -> PC

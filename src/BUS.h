@@ -9,8 +9,14 @@
 
 using namespace std;
 
-#define MEMORY_END						0xFFFFFFFF
-#define MEMORY_START					0x00000000
+#define MEMORY_END						0xFFFFFFFFFFFFFFFF
+#define MEMORY_START					0x0000000000000000
+
+/*
+Memory mapped I/O
+Serial		0xFFFFFFFFFC000000~0xFFFFFFFFFCFFFFFF
+Graphics	0xFFFFFFFFFD000000~0xFFFFFFFFFFFFFFFF
+*/
 
 class MEM;
 class CPU;
@@ -19,9 +25,9 @@ class serial;
 
 class BUS {
 	public:
-		BUS(uint32_t memSize, string romDirectory);
-		uint32_t read(uint32_t address);
-		void write(uint32_t address, uint32_t data);
+		BUS(uint64_t memSize, string romDirectory);
+		uint64_t read(uint64_t address);
+		void write(uint64_t address, uint64_t data);
 
 		
 	private:
@@ -33,6 +39,6 @@ class BUS {
 
 		
 
-		uint32_t io;
+		uint64_t io;
 		
 };
