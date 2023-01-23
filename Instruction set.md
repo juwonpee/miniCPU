@@ -4,10 +4,10 @@
 ##### Memory
 All memory accesses must be aligned by 4 for simplicity and code saftey
 ##### Registers
-4 GP0~GP3: General purpose registers
-1 PC: Program counter
-1 SP: Stack pointer
-1 BP: Stack base pointer (can also be used as a general purpose register)
+4 GP0~GP3: General purpose registers\
+1 PC: Program counter\
+1 SP: Stack pointer\
+1 BP: Stack base pointer (can also be used as a general purpose register)\
 1 CR: Control register, Also includes flags
 
 ###### Control register
@@ -36,4 +36,4 @@ Instruction split into 3 sections
 | operand 1     | 4~7        |
 | operand 2     | 8~11        |
 | operand 3     | 12~15        |
-| reserved      | 26~31        |
+| reserved      | 16~31        |
