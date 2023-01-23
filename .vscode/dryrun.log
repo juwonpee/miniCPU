@@ -1,0 +1,15 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/juwonpee/Vault/projects/miniCPU'
+g++  -Isrc -c src/BUS.cpp -o src/BUS.o -ggdb -pipe -O0
+g++  -Isrc -c src/CPU.cpp -o src/CPU.o -ggdb -pipe -O0
+g++  -Isrc -c src/GPU.cpp -o src/GPU.o -ggdb -pipe -O0
+ 
+g++  -Isrc -c src/MEM.cpp -o src/MEM.o -ggdb -pipe -O0
+g++  -Isrc -c src/main.cpp -o src/main.o -ggdb -pipe -O0
+ 
+g++  -Isrc -c src/serial.cpp -o src/serial.o -ggdb -pipe -O0
+g++ src/BUS.o src/CPU.o src/GPU.o src/MEM.o src/main.o src/serial.o -o build/miniCPU -lsfml-graphics -lsfml-window -lsfml-system -lpthread
+find . -name "*.o" | xargs -r rm 
+ 
+make: Leaving directory '/home/juwonpee/Vault/projects/miniCPU'
+ 

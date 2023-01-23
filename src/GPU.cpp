@@ -10,7 +10,7 @@ using namespace std;
 GPU::GPU(BUS* _bus) {
     bus = _bus;
     VRAM.resize(GPU_END - GPU_START);
-    memcpy(&VRAM[GPU_FONT], font, sizeof(font));
+    memcpy(&VRAM[GPU_FONT - GPU_START], &font, sizeof(font));
 
     // Window
     window = new RenderWindow(VideoMode(GPU_RESOLUTION_WIDTH, GPU_RESULUTION_HEIGHT), "miniCPU");

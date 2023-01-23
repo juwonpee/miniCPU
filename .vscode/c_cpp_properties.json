@@ -1,4 +1,3 @@
-
 {
     "configurations": [
         {
@@ -8,10 +7,10 @@
                 "${workspaceFolder}/*",
                 "/usr/local/include/**"
             ],
-            
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
-            "cppStandard": "gnu++20"
+            "cppStandard": "gnu++20",
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4
